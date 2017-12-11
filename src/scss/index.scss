@@ -1,0 +1,23 @@
+body{
+	font-size: 13px;
+	margin:0px;
+	padding: 0px;
+	line-height:1.4;
+}
+.context{
+	position: relative;
+	width:100%;
+	canvas{
+		width:100%;
+		height:auto;
+		background: #999;
+	}
+	input{
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		height:100%;
+		width:100%;
+		outline: none;
+	}
+}
