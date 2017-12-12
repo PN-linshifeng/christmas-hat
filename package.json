@@ -32,7 +32,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "set NODE_ENV=dev&&webpack-dev-server  --host 192.168.2.35"
+    "start": "set NODE_ENV=dev&&webpack-dev-server  --host 192.168.2.38"
   },
   "author": "",
   "license": "ISC"

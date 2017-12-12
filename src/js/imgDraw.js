@@ -12,6 +12,10 @@ var ImgDraw = function(obj) {
 	this.dy = 0;
 	this.dw = 750;
 	this.dh = 750;
+	this.point = {
+		x: 0,
+		y: 0
+	};
 	this.translate = {
 		x: 0,
 		y: 0
@@ -29,15 +33,26 @@ ImgDraw.prototype.init = function(context) {
 	if (this.full) {
 		this.sw = this.imgObj.width;
 		this.sh = this.imgObj.height;
-		this.dx = 40;
-		this.dy = 40;
 		this.dw = 750 - 80;
 		this.dh = parseInt(this.sh * this.dw / this.imgObj.width);
+		this.dx = -this.dw / 2;
+		this.dy = -this.dh / 2;
+		this.translate = {
+			x: this.dx * -1 + 40,
+			y: this.dy * -1 + 40
+		};
+
 	} else {
 		this.sw = this.imgObj.width;
 		this.sh = this.imgObj.height;
 		this.dw = this.sw;
 		this.dh = this.sh;
+		this.dx = -this.dw / 2;
+		this.dy = -this.dh / 2;
+		this.translate = {
+			x: this.dx * -1 + 40 + this.translate.x,
+			y: this.dy * -1 + 40 + this.translate.y
+		};
 	}
 
 }
@@ -46,12 +61,17 @@ ImgDraw.prototype.draw = function(context) {
 		context.beginPath()
 		context.rect(40, 40, 670, 670);
 		context.clip()
-			// context.scale(this.scale.x, this.scale.y)
+			// context.scale(this.scale.x, this.scale.y)+
+
+		context.translate(this.translate.x, this.translate.y);
+
+		context.rotate(this.rotate)
+			// console.log(this.translate.x, this.translate.y)
 		context.drawImage(this.imgObj, this.sx, this.sy, this.sw, this.sh, this.dx, this.dy, this.dw, this.dh);
 		// console.log(this.sx, this.sy, this.sw, this.sh, this.dx, this.dy, this.dw, this.dh)
 
-
 		context.restore();
+
 	}
 	// module.exports = ImgDraw;
 export default ImgDraw;
