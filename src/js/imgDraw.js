@@ -1,5 +1,7 @@
 var ImgDraw = function(obj) {
 	this.context = null;
+	this.name = "";
+	this.padding = 40;
 	this.imgObj = null;
 	this.state = 0;
 	this.full = true;
@@ -29,17 +31,17 @@ var ImgDraw = function(obj) {
 
 	this.init();
 }
-ImgDraw.prototype.init = function(context) {
+ImgDraw.prototype.init = function() {
 	if (this.full) {
 		this.sw = this.imgObj.width;
 		this.sh = this.imgObj.height;
-		this.dw = 750 - 80;
+		this.dw = 750 - this.padding * 2;
 		this.dh = parseInt(this.sh * this.dw / this.imgObj.width);
 		this.dx = -this.dw / 2;
 		this.dy = -this.dh / 2;
 		this.translate = {
-			x: this.dx * -1 + 40,
-			y: this.dy * -1 + 40
+			x: this.dx * -1 + this.padding,
+			y: this.dy * -1 + this.padding
 		};
 
 	} else {
@@ -50,28 +52,63 @@ ImgDraw.prototype.init = function(context) {
 		this.dx = -this.dw / 2;
 		this.dy = -this.dh / 2;
 		this.translate = {
-			x: this.dx * -1 + 40 + this.translate.x,
-			y: this.dy * -1 + 40 + this.translate.y
+			x: this.dx * -1 + this.padding + this.translate.x,
+			y: this.dy * -1 + this.padding + this.translate.y
 		};
 	}
 
 }
 ImgDraw.prototype.draw = function(context) {
-		context.save();
-		context.beginPath()
-		context.rect(40, 40, 670, 670);
-		context.clip()
-			// context.scale(this.scale.x, this.scale.y)+
+	context.save();
+	context.beginPath()
+	context.rect(this.padding, this.padding, 750 - this.padding * 2, 750 - this.padding * 2);
+	context.clip()
 
-		context.translate(this.translate.x, this.translate.y);
+	context.translate(this.translate.x, this.translate.y);
+	context.rotate(this.rotate * Math.PI / 180)
+	context.drawImage(this.imgObj, this.sx, this.sy, this.sw, this.sh, this.dx, this.dy, this.dw, this.dh);
+	context.restore();
+}
+ImgDraw.prototype.build = function(context) {
 
-		context.rotate(this.rotate)
-			// console.log(this.translate.x, this.translate.y)
-		context.drawImage(this.imgObj, this.sx, this.sy, this.sw, this.sh, this.dx, this.dy, this.dw, this.dh);
-		// console.log(this.sx, this.sy, this.sw, this.sh, this.dx, this.dy, this.dw, this.dh)
+	context.save();
+	context.beginPath()
+	context.scale(750 / 670, 750 / 670)
+	context.translate(this.translate.x - this.padding, this.translate.y - this.padding);
+	context.rotate(this.rotate * Math.PI / 180)
 
-		context.restore();
+	context.drawImage(this.imgObj, this.sx, this.sy, this.sw, this.sh, this.dx, this.dy, this.dw, this.dh);
+	context.restore();
+}
 
-	}
-	// module.exports = ImgDraw;
 export default ImgDraw;
+
+if (typeof Object.assign != 'function') {
+	// Must be writable: true, enumerable: false, configurable: true
+	Object.defineProperty(Object, "assign", {
+		value: function assign(target, varArgs) { // .length of function is 2
+			'use strict';
+			if (target == null) { // TypeError if undefined or null
+				throw new TypeError('Cannot convert undefined or null to object');
+			}
+
+			var to = Object(target);
+
+			for (var index = 1; index < arguments.length; index++) {
+				var nextSource = arguments[index];
+
+				if (nextSource != null) { // Skip over if undefined or null
+					for (var nextKey in nextSource) {
+						// Avoid bugs when hasOwnProperty is shadowed
+						if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+							to[nextKey] = nextSource[nextKey];
+						}
+					}
+				}
+			}
+			return to;
+		},
+		writable: true,
+		configurable: true
+	});
+}

@@ -1,0 +1,80 @@
+/*模态窗口*/
+.page-view{
+	display: none;
+ 	position: fixed;
+ 	left: 0px;
+ 	right: 0px;
+ 	bottom: 0px;
+ 	top: 0px;   
+ 	height: 100%;
+ 	z-index: 9;
+ 	overflow: hidden;
+ 	background: rgba(0, 0, 0,0.7);
+ 	animation:fadein 100ms linear;
+ 	
+}
+
+.page-view .page-warp{
+	position: absolute;
+	left: 10px;
+	right: 10px;
+	bottom: 0rem;
+	transform: translateY(-100px);
+	-webkit-transform: translateY(-100px);
+	background: #fff;
+	padding: 15px 10px;
+	font-size: 12px;
+	overflow: auto;
+	-webkit-overflow-scrolling: touch;
+	border-radius: 5px;
+	max-height: 80%;
+}
+.page-view .close{
+	position: absolute;
+	left: 50%;
+	bottom: 30px;
+	margin-left: -20px;
+	display: block;
+	width: 40px;
+	height: 40px;
+	background: #f30;
+	border-radius:20px;
+	transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);
+	cursor: pointer;
+}
+.page-view .close:before{
+	display: block;
+	position: absolute;
+	left: 50%;
+	top: 5px;
+	bottom: 5px;
+	content: "";
+	width: 1px;
+	background: #fff;
+}
+.page-view .close:after{
+	display: block;
+	position: absolute;
+	top:  50%;
+	left: 5px;
+	right: 5px;
+	content: "";
+	height: 1px;
+	background: #fff;
+}
+@media screen and (max-width: 320px){
+	.page-view{
+		cursor: pointer;
+	}
+}
+@keyframes fadein{
+	0%{
+		opacity: 0;
+		transform: scale(1.1);
+	}
+	100%{
+		opacity: 1;
+		transform: scale(1);
+	}
+}

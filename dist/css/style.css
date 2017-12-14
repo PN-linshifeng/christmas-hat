@@ -1,0 +1,217 @@
+/*模态窗口*/
+.page-view{
+	display: none;
+ 	position: fixed;
+ 	left: 0px;
+ 	right: 0px;
+ 	bottom: 0px;
+ 	top: 0px;   
+ 	height: 100%;
+ 	z-index: 9;
+ 	overflow: hidden;
+ 	background: rgba(0, 0, 0,0.7);
+ 	animation:fadein 100ms linear;
+ 	
+}
+
+.page-view .page-warp{
+	position: absolute;
+	left: 10px;
+	right: 10px;
+	bottom: 0rem;
+	transform: translateY(-100px);
+	-webkit-transform: translateY(-100px);
+	background: #fff;
+	padding: 15px 10px;
+	font-size: 12px;
+	overflow: auto;
+	-webkit-overflow-scrolling: touch;
+	border-radius: 5px;
+	max-height: 80%;
+}
+.page-view .close{
+	position: absolute;
+	left: 50%;
+	bottom: 30px;
+	margin-left: -20px;
+	display: block;
+	width: 40px;
+	height: 40px;
+	background: #f30;
+	border-radius:20px;
+	transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);
+	cursor: pointer;
+}
+.page-view .close:before{
+	display: block;
+	position: absolute;
+	left: 50%;
+	top: 5px;
+	bottom: 5px;
+	content: "";
+	width: 1px;
+	background: #fff;
+}
+.page-view .close:after{
+	display: block;
+	position: absolute;
+	top:  50%;
+	left: 5px;
+	right: 5px;
+	content: "";
+	height: 1px;
+	background: #fff;
+}
+@media screen and (max-width: 320px){
+	.page-view{
+		cursor: pointer;
+	}
+}
+@keyframes fadein{
+	0%{
+		opacity: 0;
+		transform: scale(1.1);
+	}
+	100%{
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+body {
+  font-size: 13px;
+  margin: 0px;
+  padding: 0px;
+  line-height: 1.4; }
+
+*, *:before, *:after {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+
+p, ul, li {
+  padding: 0px;
+  margin: 0px; }
+
+a {
+  text-decoration: none; }
+
+.context {
+  position: relative;
+  margin-bottom: 20px;
+  width: 100%;
+  line-height: 0; }
+  .context canvas {
+    width: 100%;
+    height: auto;
+    background: #999; }
+  .context input {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    outline: none;
+    opacity: 0; }
+
+.hat-box {
+  width: 100%;
+  overflow: auto;
+  margin-bottom: 20px; }
+  .hat-box ul {
+    width: 2080px; }
+    .hat-box ul:before, .hat-box ul:after {
+      display: block;
+      content: "";
+      width: 100%;
+      height: 1px;
+      background: #ccc;
+      -webkit-transform: scale(1, 0.5);
+          -ms-transform: scale(1, 0.5);
+              transform: scale(1, 0.5);
+      overflow: hidden; }
+    .hat-box ul li {
+      position: relative;
+      display: block;
+      float: left;
+      list-style: none;
+      text-align: center;
+      width: 70px;
+      height: 70px;
+      line-height: 70px;
+      vertical-align: middle;
+      padding: 5px; }
+      .hat-box ul li img {
+        max-width: 100%;
+        max-height: 100%;
+        vertical-align: middle; }
+      .hat-box ul li:before {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        display: block;
+        content: "";
+        width: 1%;
+        height: 100%;
+        background: #ccc;
+        -webkit-transform: scale(0.5, 1);
+            -ms-transform: scale(0.5, 1);
+                transform: scale(0.5, 1); }
+
+.btn-box {
+  margin-bottom: 20px;
+  text-align: center; }
+  .btn-box .btn {
+    display: inline-block;
+    width: 90px;
+    height: 40px;
+    line-height: 40px;
+    background: #f30;
+    color: #fff;
+    text-align: center;
+    border: 0px;
+    font-size: 14px;
+    border-radius: 20px;
+    margin: 0px 3px;
+    outline: none; }
+
+/*create-img*/
+.create-img {
+  width: 100%;
+  text-align: center; }
+  .create-img img {
+    border: 1px solid #e2e2e2;
+    width: 100%; }
+  .create-img p {
+    line-height: 100%;
+    font-size: 14px;
+    padding-top: 10px;
+    -webkit-animation: yao 1.5s ease-in-out infinite;
+            animation: yao 1.5s ease-in-out infinite; }
+
+@-webkit-keyframes yao {
+  0% {
+    -webkit-transform: translateX(-10px);
+            transform: translateX(-10px);
+    color: #f30; }
+  50% {
+    -webkit-transform: translateX(10px);
+            transform: translateX(10px);
+    color: #089512; }
+  100% {
+    -webkit-transform: translateX(-10px);
+            transform: translateX(-10px);
+    color: #0678c8; } }
+
+@keyframes yao {
+  0% {
+    -webkit-transform: translateX(-10px);
+            transform: translateX(-10px);
+    color: #f30; }
+  50% {
+    -webkit-transform: translateX(10px);
+            transform: translateX(10px);
+    color: #089512; }
+  100% {
+    -webkit-transform: translateX(-10px);
+            transform: translateX(-10px);
+    color: #0678c8; } }

@@ -3,14 +3,15 @@ var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var SpritesmithPlugin = require('webpack-spritesmith');
+var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = function(env) {
 	return {
-		entry: './src/js/index.js',
+		entry: ['./src/js/index.js'], //babel-polyfill', 
 		output: {
 			filename: 'js/bundle.js',
 			path: path.resolve(__dirname, 'dist'),
-			// publicPath:"/assets",
+			publicPath: "/",
 		},
 		module: {
 			rules: [
@@ -57,27 +58,8 @@ module.exports = function(env) {
 							presets: ['es2015']
 						}
 					}
-				},
-				//html
-				{
-					test: /\.(html)$/,
-					use: {
-						loader: 'html-loader',
-						options: {
-							attrs: [':data-src']
-						}
-					}
 				}
 			]
-		},
-
-		devServer: {
-			publicPath: '/',
-			port: 8080,
-			contentBase: "./public", //本地服务器所加载的页面所在的目录
-			historyApiFallback: true, //不跳转
-			inline: true, //实时刷新
-			hot: true // 使用热加载插件 HotModuleReplacementPlugin
 		},
 		resolve: {
 			extensions: ['.js', '.jsx'],
@@ -88,19 +70,32 @@ module.exports = function(env) {
 			new HtmlWebpackPlugin({
 				template: "src/index.html",
 			}),
-			new webpack.HotModuleReplacementPlugin(), // 启用 HMR
-			// new webpack.optimize.UglifyJsPlugin({
-			// 	__DEV2__: JSON.stringify(process.env.NODE_ENV) === 'production'
-			// }),
+
 			new webpack.DefinePlugin({
 				__DEV__: JSON.stringify(JSON.parse((process.env.NODE_ENV == 'dev') || 'false')),
 				__DEV2__: JSON.stringify(process.env.NODE_ENV) === 'production',
 			}),
+			//压缩混淆
+			new UglifyJSPlugin({
+				uglifyOptions: {
+					ie8: true,
+					ecma: 5,
+					mangle: {
+						eval: true,
+					}
+				}
+			}),
+			// new webpack.optimize.UglifyJsPlugin({
+			// 	compress: {
+			// 		warnings: false,
+			// 		// drop_console: false,
+			// 	}
+			// }),
 
 			//提取css样式插件
 			new ExtractTextPlugin({
-				filename: '[name].[chunkhash:8].css',
-				disable: true,
+				filename: 'css/style.css',
+				disable: false,
 			}),
 
 			// 定义为生产环境，编译 React 时压缩到最小
@@ -112,12 +107,12 @@ module.exports = function(env) {
 			//雪碧图
 			new SpritesmithPlugin({
 				src: {
-					cwd: path.resolve(__dirname, 'app/images/icon'),
+					cwd: path.resolve(__dirname, 'src/images/icon'),
 					glob: '*.png'
 				},
 				target: {
-					image: path.resolve(__dirname, 'app/sprite/sprite.png'),
-					css: path.resolve(__dirname, 'app/sprite/sprite.css')
+					image: path.resolve(__dirname, 'dist/sprite/sprite.png'),
+					css: path.resolve(__dirname, 'dist/sprite/sprite.css')
 				},
 				apiOptions: {
 					cssImageRef: "sprite.png"
