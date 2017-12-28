@@ -11,7 +11,7 @@ module.exports = function(env) {
 		output: {
 			filename: 'js/bundle.js',
 			path: path.resolve(__dirname, 'dist'),
-			publicPath: "/",
+			publicPath: "/static/html/hat/",
 		},
 		module: {
 			rules: [
@@ -35,7 +35,9 @@ module.exports = function(env) {
 						options: {
 							name: "images/[name].[ext]",
 							limit: 8192,
+							// publicPath: '../'
 						}
+
 					}]
 				},
 				//字体
@@ -70,7 +72,10 @@ module.exports = function(env) {
 			new HtmlWebpackPlugin({
 				template: "src/index.html",
 			}),
-
+			// new webpack.LoaderOptionsPlugin({
+			// 	minimize: true,
+			// 	debug: false,
+			// }),
 			new webpack.DefinePlugin({
 				__DEV__: JSON.stringify(JSON.parse((process.env.NODE_ENV == 'dev') || 'false')),
 				__DEV2__: JSON.stringify(process.env.NODE_ENV) === 'production',
@@ -85,12 +90,12 @@ module.exports = function(env) {
 					}
 				}
 			}),
-			// new webpack.optimize.UglifyJsPlugin({
-			// 	compress: {
-			// 		warnings: false,
-			// 		// drop_console: false,
-			// 	}
-			// }),
+			new webpack.optimize.UglifyJsPlugin({
+				compress: {
+					warnings: false,
+					// drop_console: false,
+				}
+			}),
 
 			//提取css样式插件
 			new ExtractTextPlugin({

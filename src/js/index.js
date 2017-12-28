@@ -1,4 +1,5 @@
 import ImgDraw from "./ImgDraw";
+import Snow from "./snow.js";
 // import "./modai.js";
 if (process.env.NODE_ENV == "dev") {
 	require("html-loader!../index.html");
@@ -6,6 +7,12 @@ if (process.env.NODE_ENV == "dev") {
 // var ImgDraw = require('./ImgDraw')
 import "../scss/index.scss";
 import defaultHatSrc from '../images/99.png';
+
+
+//屏幕大小
+var windowW = document.body.clientWidth;
+var windowH = document.body.clientHeight;
+
 var hatBox = document.querySelector(".hat-box");
 var createImg = document.getElementById("createImg");
 var canvasImg = document.getElementById("canvasImg")
@@ -73,6 +80,7 @@ imgFile.addEventListener("change", function() {
 	var headerImg = new Image();
 	headerImg.src = src;
 	headerImg.onload = function() {
+		document.querySelector(".tip").style.display = "none";
 		switch (imgFloor.length) {
 			case 0:
 				imgFloor.push(new ImgDraw({
@@ -126,6 +134,7 @@ var sx = 0,
 	mtx = 0,
 	mty = 0,
 	mr = 0,
+	scaleXY = "W",
 	one = false;
 getCanvas.addEventListener("touchstart", function(e) {
 	e.preventDefault();
@@ -179,8 +188,6 @@ getCanvas.addEventListener("touchstart", function(e) {
 	my = imgFloor[isFloor].dy;
 	mw = imgFloor[isFloor].dw;
 	mh = imgFloor[isFloor].dh;
-
-
 }, false);
 getCanvas.addEventListener("touchmove", function(e) {
 	e.preventDefault();
@@ -194,8 +201,8 @@ getCanvas.addEventListener("touchmove", function(e) {
 		ey = e.touches[0].pageY;
 		// er = -ey / ex
 
-		var w = ex - sx;
-		var h = ey - sy;
+		var w = parseInt(ex - sx);
+		var h = parseInt(ey - sy);
 		//放大或旋转
 		if (hanleArc) {
 			// 右上方和左下方
@@ -204,17 +211,37 @@ getCanvas.addEventListener("touchmove", function(e) {
 				// var direction = angle / 90;
 				if (hanleArc == 1 || hanleArc == 3) {
 					editTyle = "scale";
+					var rotateYU = mr % 360;
+					if (rotateYU < 90 || (rotateYU > 180 && rotateYU < 270)) {
+						scaleXY = "H"
+					} else {
+						scaleXY = "W"
+					}
+					// scaleXY = Math.abs(w) >= Math.abs(h) ? "W" : "H";
 				} else {
 					editTyle = "rotate";
 				}
 			}
 			if (editTyle === "scale") {
-				if (hanleArc == 1 || hanleArc == 4) {
-					w = -w;
+				var rotateYU = parseInt(mr % 360);
+				if (rotateYU > 90 && rotateYU < 270) {
+
+					if (hanleArc == 3) {
+						w = -w;
+						h = -h;
+					}
+				} else {
+
+					if (hanleArc == 1) {
+						w = -w;
+						h = -h;
+					}
 				}
-				imgFloor[isFloor].dw = parseInt(mw + w * proportion * 2);
+
+				var scale = scaleXY === "W" ? w : h;
+				imgFloor[isFloor].dw = parseInt(mw + scale * proportion * 2);
 				imgFloor[isFloor].dh = imgFloor[isFloor].dw * mh / mw;
-				imgFloor[isFloor].dx = parseInt(mx - w * proportion);
+				imgFloor[isFloor].dx = parseInt(mx - scale * proportion);
 				imgFloor[isFloor].dy = imgFloor[isFloor].dx * my / mx;
 			}
 			if (editTyle === "rotate") {
@@ -256,14 +283,16 @@ getCanvas.addEventListener("touchmove", function(e) {
 }, false);
 getCanvas.addEventListener("touchend", function(e) {
 	editTyle = undefined;
+	console.log("角度", parseInt(imgFloor[isFloor].rotate % 360))
 }, false)
+
 
 /*--------------下面是方法---------------*/
 //rect
 function drawRect() {
 	context.clearRect(0, 0, 750, 750)
 	context.save();
-	context.fillStyle = "#fff";
+	context.fillStyle = "#f5f5f5";
 	context.fillRect(40, 40, 750 - 80, 750 - 80);
 	context.restore();
 }
@@ -272,12 +301,9 @@ function drawImg() {
 
 	drawRect()
 		//绘画图层
-	for (var i = 0; i < imgFloor.length; i++) {
-		imgFloor[i].draw(context);
-	}
-	// imgFloor.forEach(function(item) {
-	// 	item.draw(context);
-	// })
+	imgFloor.forEach(function(item) {
+		item.draw(context);
+	})
 	if (isFloor >= 0) {
 		Edit();
 	}
@@ -296,12 +322,9 @@ function buildImg() {
 	cxt.fillStyle = "#fff"
 	cxt.fillRect(0, 0, 750, 750)
 
-	for (var i = 0; i < imgFloor.length; i++) {
-		imgFloor[i].build(cxt);
-	}
-	// imgFloor.forEach(function(item, index) {
-	// 	item.build(cxt);
-	// });
+	imgFloor.forEach(function(item, index) {
+		item.build(cxt);
+	});
 	var src = createCanvas.toDataURL("image/png");
 	canvasImg.src = src;
 	// document.querySelector("body").appendChild(createCanvas)
@@ -410,7 +433,7 @@ function Edit() {
 //设置编辑类型
 function setEditType(x, y) {
 	var item = imgFloor[isFloor];
-	var r = 40;
+	var r = 45;
 	//画圆圈
 	context.save();
 	context.translate(item.translate.x, item.translate.y);
@@ -468,3 +491,94 @@ function getFileUrl(imgObj) {
 }
 
 window.imgFloor = imgFloor;
+
+
+
+//下雪
+import treeImgSrc from '../images/tree.png';
+
+var treeImg = new Image();
+var closeSnow = document.getElementById("closeSnow");
+var snowCanvas = document.getElementById("snow");
+var snowGct = snowCanvas.getContext("2d");
+var stop = null;
+snowCanvas.width = windowW * 2;
+snowCanvas.height = windowH * 2;
+closeSnow.addEventListener("click", function() {
+	document.querySelector(".snow-box").style.display = "none";
+	document.querySelector(".wechar-ani").classList.add('scaleDown')
+	cancelAnimationFrame(stop);
+}, false);
+
+treeImg.onload = function() {
+	ani()
+}
+treeImg.src = treeImgSrc
+var snowArr = []; //粒子对象
+for (var i = 0; i < 60; i++) { //生成粒子的个数
+	snowArr.push(new Snow());
+	snowArr[i].init();
+}
+for (var i = 0; i < 30; i++) {
+	snowArr[i].reset(); //初始化 分散粒子
+}
+
+function ani() {
+	snowGct.clearRect(0, 0, windowW * 2, windowH * 2);
+	snowGct.drawImage(treeImg, windowW - treeImg.width / 2, windowH * 2 - treeImg.height + 80)
+	snowArr.forEach(function(item) {
+		item.draw(snowGct, windowW * 2, windowH * 2)
+	});
+
+	stop = requestAnimationFrame(ani)
+}
+
+
+//微信分享
+import 'whatwg-fetch';
+var abc = encodeURIComponent(window.location.href)
+fetch('http://www.viphk.xin/ajax/weixin.ashx?url=' + abc, {
+	method: "GET"
+}).then((response) => {
+	return response.json();
+}).then((json) => {
+	console.log(json)
+	wxInfo(json)
+})
+
+function wxInfo(json) {
+	//配置微信
+	wx.config({
+		debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+		appId: 'wx3dcb634a12345331', // 必填，公众号的唯一标识
+		timestamp: json.timestamp, // 必填，生成签名的时间戳
+		nonceStr: json.noncestr, // 必填，生成签名的随机串
+		signature: json.signature, // 必填，签名，见附录1
+		jsApiList: [
+			'checkJsApi',
+			'onMenuShareTimeline',
+			'onMenuShareAppMessage',
+			'onMenuShareQQ',
+			'onMenuShareWeibo'
+		]
+	});
+
+	//分享信息   
+	wx.ready(function() {
+		var sdata = {
+			title: "让微信头像带上圣诞帽子",
+			desc: "只要15秒, 在线给微信头像制作圣诞老人帽子",
+			link: window.location.href,
+			imgUrl: "http://www.viphk.xin/static/html/hat/images/head.jpg"
+		};
+		wx.onMenuShareTimeline(sdata);
+		wx.onMenuShareAppMessage(sdata);
+		wx.onMenuShareQQ(sdata);
+		wx.onMenuShareWeibo(sdata);
+	});
+
+};
+var au = document.getElementById("bgm");
+document.addEventListener("WeixinJSBridgeReady", function() {
+	au.play();
+}, false);

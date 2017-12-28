@@ -4,11 +4,13 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-	<title>给微信头像带上圣诞帽子</title>
+	<title>让微信头像带上圣诞帽子</title>
 </head>
 <body>
+<div style="display: ;">
 	<div class="context">
 		<canvas width="750" height="750" id="canvas"></canvas>
+		<p class="tip">点击这里添加头像<br>香港代购二维码在页底</p>
 		<input type="file" id="imgFile">
 	</div>
 	
@@ -43,10 +45,13 @@
 		</ul>
 	</div>
 	<div class="btn-box">
-		<input type="button" value="选择头像" id="selectHead" class="btn">
-		<input type="button" value="生成图片" id="createImg" class="btn">
+		<span id="selectHead" class="btn">选择头像</span>
+		<span id="createImg" class="btn">生成图片</span>
 	</div>
-
+	<div class="wechar"><img src=images/wechar.png alt=""><br><span>长按添加香港代购</span></div>
+	<div class="wechar-ani"><div><img src=images/wechar.png alt=""><br><span>长按添加香港代购</span></div></div>
+	<div class="copyright"><a href="http://www.viphk.xin">香港代购网</a></div>
+</div>
     <!--生成头像-->
 	<div class="page-view" id="createHeadImg">
         <span class="close"></span>
@@ -57,7 +62,21 @@
            	</div>
         </div>
     </div>
+    <div class="snow-box" style="">
+		<canvas id="snow"></canvas>	
+		<span class="close" id="closeSnow"></span>
+    </div>
+    <audio preload="preload" id="bgm" src="http://www.viphk.xin/static/html/hat/images/Jingle_Bells.mp3" loop="" autoplay></audio>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 </body>
 </html>
-
+<script>
+ var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?b0bbb60b402a5a03dbf725d7cd16dabd";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 
